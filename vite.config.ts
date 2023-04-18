@@ -37,6 +37,7 @@ export default defineConfig(({ command, mode }) => {
           entry: 'electron/main/index.ts',
           onstart(options) {
             if (env.VSCODE_DEBUG) {
+              options.startup()
               console.log(/* For `.vscode/.debug.script.mjs` */'[startup] Electron App')
             } else {
               options.startup()
@@ -76,13 +77,13 @@ export default defineConfig(({ command, mode }) => {
       renderer(),
     ],
     server: env.VSCODE_DEBUG && (() => {
-      const url = new URL(pkg.debug.env.VITE_DEV_SERVER_URL)
+      // const url = new URL(pkg.debug.env.VITE_DEV_SERVER_URL)
       return {
-        host: url.hostname,
-        port: +url.port,
+        // host: url.hostname,
+        // port: +url.port,
         proxy: {
           '^/api': {
-            target: 'http://192.168.131.167:81',
+            target: 'http://127.0.0.1:3001',
             changeOrigin: true,
             rewrite: path => path
           }

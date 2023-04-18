@@ -69,6 +69,7 @@ export const request = async <T = any>(
 ): Promise<T> => {
   try {
     const { isGetDataDirectly = true, isMock } = options
+    console.log(baseURL, 'base', import.meta.env)
     config.baseURL ??= isMock ? baseMockURL : baseURL
     const res = await instance.request(config)
     return isGetDataDirectly ? res.data : res
