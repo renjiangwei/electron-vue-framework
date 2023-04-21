@@ -222,19 +222,6 @@
 <script setup lang="ts">
 import { reactive, computed, onMounted, onBeforeUnmount } from 'vue';
 import WarnMask from './warn-mask.vue'
-const app = document.querySelector('#app')! as HTMLElement
-const w = window.innerWidth
-const h = window.innerHeight
-app.style.width = `${w}px`
-app.style.height = `${h}px`
-app.style.overflow = 'hidden'
-window.addEventListener('resize', () => {
-  const w = window.innerWidth
-  const h = window.innerHeight
-  app.style.width = `${w}px`
-  app.style.height = `${h}px`
-  app.style.overflow = 'hidden'
-})
 const staticState = reactive({
   nowFormat: '00:00', // 现在时间
   nowTimer: null as null | NodeJS.Timer,
