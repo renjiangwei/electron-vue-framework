@@ -56,7 +56,7 @@
 // import fs from 'fs'
 // import mqtt from 'mqtt'
 // console.log(mqtt, 'mqtt')
-// const { ipcRenderer } = require('electron')
+import { ipcRenderer } from 'electron'
 // ipcRenderer.send('open-win')
 // const a = mqtt.connect('ws://192.168.131.16:8083/mqtt')
 // a.on('connect', () => {
@@ -69,6 +69,8 @@
 
 const handleClick = () => {
   console.log('ad')
+  ipcRenderer.invoke('show-dialog', 'msg')
+  localStorage.setItem('msg', 'msgffdffggg')
 }
 </script>
 <style lang="less" scoped>

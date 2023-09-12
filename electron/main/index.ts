@@ -3,7 +3,7 @@ import { app, BrowserWindow, shell, ipcMain, Notification, Tray, nativeImage, Me
 } from 'electron'
 import { release } from 'node:os'
 import { join } from 'node:path'
-// import { startServer } from './server'
+import { startServer } from './server'
 
 // The built directory structure
 //
@@ -90,7 +90,7 @@ async function createWindow() {
   //   body: NOTIFICATION_BODY
   // }).show()
 
-  // startServer()
+  startServer()
   // win.webContents.on('will-navigate', (event, url) => { }) #344
 }
 
@@ -105,13 +105,20 @@ const createSubWindow = () => {
   const p = screen.getPrimaryDisplay()
   const w = p.workAreaSize.width
   const h = p.workAreaSize.height
+  if (sub) {
+    sub.close()
+    sub = null
+  }
   sub = new BrowserWindow({
     width: 400,
     height: 400,
     frame: false,
     fullscreen: false,
     title: '通知',
-    
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
   })
   sub.setPosition(w - 400, h - 400)
   // sub.loadFile('./dist/index.html')
@@ -125,61 +132,60 @@ const createSubWindow = () => {
 }
 
 let tray: Tray;
-// const initTray = () => {
-//   const icon = nativeImage.createFromPath('./src/assets/favicon@256x256.png')
-//   tray = new Tray(icon)
-//   const contextMenu = Menu.buildFromTemplate([
-//     { label: 'show', type: 'normal', click () {
-//       win?.show()
-//     } },
-//     { label: 'hide', type: 'normal', click () {
-//       win?.hide()
-//     } },
-//     { label: 'max', type: 'normal', click () {
-//       if (win?.isMaximizable() && !win.isMaximized()) {
-//         win?.maximize()
-//       } else {
-//         win?.unmaximize()
-//       }
-//     } },
-//     { label: 'small', type: 'normal', click () {
-//       // win.hide()
-//       win.minimize()
-//     } },
-//     { label: 'close', type: 'normal', click () {
-//       app.quit()
-//     } }
-//   ] as MenuItemConstructorOptions[])
+const initTray = () => {
+  const icon = nativeImage.createFromPath(join(process.env.PUBLIC, 'favicon@256x256.png'))
+  tray = new Tray(icon)
+  const contextMenu = Menu.buildFromTemplate([
+    { label: 'show', type: 'normal', click () {
+      win?.show()
+    } },
+    { label: 'hide', type: 'normal', click () {
+      win?.hide()
+    } },
+    { label: 'max', type: 'normal', click () {
+      if (win?.isMaximizable() && !win.isMaximized()) {
+        win?.maximize()
+      } else {
+        win?.unmaximize()
+      }
+    } },
+    { label: 'small', type: 'normal', click () {
+      // win.hide()
+      win.minimize()
+    } },
+    { label: 'close', type: 'normal', click () {
+      app.quit()
+    } }
+  ] as MenuItemConstructorOptions[])
   
-//   tray.setContextMenu(contextMenu)
-//   tray.setToolTip('This is my application')
-//   tray.setTitle('This is my title')
-//   tray.on('double-click', () => {
-//     if (win?.isMaximizable() && !win.isMaximized()) {
-//       win?.maximize()
-//     } else {
-//       win?.unmaximize()
-//     }
-//   })
-// }
+  tray.setContextMenu(contextMenu)
+  tray.setToolTip('This is my application')
+  tray.setTitle('This is my title')
+  tray.on('double-click', () => {
+    if (win?.isMaximizable() && !win.isMaximized()) {
+      win?.maximize()
+    } else {
+      win?.unmaximize()
+    }
+  })
+}
 
 app.whenReady().then(async () => {
   await createWindow();
-  // initTray()
-  // let a = 0
-  // setInterval(() => {
-  //   if (a < 1) {
-  //     win.setProgressBar(a)
-  //     a+=0.03
-  //   } else {
-  //     win.setProgressBar(0)
-  //   }
-  // }, 1000)
+  initTray()
+  let a = 0
+  setInterval(() => {
+    if (a < 1) {
+      win.setProgressBar(a)
+      a+=0.03
+    } else {
+      win.setProgressBar(0)
+    }
+  }, 1000)
   
-  // setTimeout(() => {
-  //   createDialog()
-  //   // createSubWindow()
-  // }, 3000)
+  setTimeout(() => {
+    createDialog()
+  }, 3000)
 })
 
 app.on('window-all-closed', () => {
@@ -227,3 +233,11 @@ ipcMain.handle('open-win', (_, arg) => {
   }
 })
 
+ipcMain.handle('show-dialog', (e, msg) => {
+  console.log('show dialog', msg)
+  createSubWindow()
+})
+ipcMain.handle('close-dialog', () => {
+  sub.close()
+  sub = null
+})

@@ -13,6 +13,14 @@ export default defineConfig(({ command, mode }) => {
   const isServe = command === 'serve'
   const isBuild = command === 'build'
   const sourcemap = isServe || !!env.VSCODE_DEBUG
+
+  const externals = pkg.dependencies ? pkg.dependencies : {}
+  const list = Object.keys(externals)
+  const i = list.indexOf('express')
+  if (i > -1) {
+    list.splice(i, 1)
+  }
+  console.log(list, 'list')
   return {
     css: {
       preprocessorOptions: {
@@ -29,14 +37,14 @@ export default defineConfig(({ command, mode }) => {
         }
       ]
     },
-    // build: {
-    //   rollupOptions: {
-    //     input: {
-    //       main: resolve(__dirname, 'index.html'),
-    //       subWindow: resolve(__dirname, 'subWindow/index.html'),
-    //     }
-    //   }
-    // },
+    build: {
+      rollupOptions: {
+        input: {
+          main: resolve(__dirname, 'index.html'),
+          subWindow: resolve(__dirname, 'subWindow/index.html'),
+        }
+      }
+    },
     plugins: [
       vue(),
       // {
@@ -79,7 +87,8 @@ export default defineConfig(({ command, mode }) => {
               minify: isBuild,
               outDir: 'dist-electron/main',
               rollupOptions: {
-                external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
+                // external: list,
+                // external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
               },
             },
           },
