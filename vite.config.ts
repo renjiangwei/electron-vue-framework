@@ -1,5 +1,5 @@
 import { rmSync } from 'node:fs'
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig, loadEnv, build } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import electron from 'vite-plugin-electron'
 import renderer from 'vite-plugin-electron-renderer'
@@ -29,8 +29,38 @@ export default defineConfig(({ command, mode }) => {
         }
       ]
     },
+    // build: {
+    //   rollupOptions: {
+    //     input: {
+    //       main: resolve(__dirname, 'index.html'),
+    //       subWindow: resolve(__dirname, 'subWindow/index.html'),
+    //     }
+    //   }
+    // },
     plugins: [
       vue(),
+      // {
+      //   name: 'test',
+      //   apply: 'serve',
+      //   configureServer (server) {
+      //     server.httpServer.once('listening', () => {
+      //       build({
+      //         plugins: [
+      //           {
+      //             name: 'startup',
+      //             async closeBundle () {
+      //               process.env.VITE_DEV_SERVER_URL = 'http://localhost:3000/'
+      //               console.log('close bundle')
+      //               const { spawn } = await import('node:child_process')
+      //               const electron = await import('electron')
+      //               process.electronApp = spawn(electron.default ?? electron as any, ['.', '--no-sandbox'], { stdio: 'inherit' })
+      //             }
+      //           }
+      //         ]
+      //       })
+      //     })
+      //   }
+      // },
       electron([
         {
           // Main-Process entry file of the Electron App.
@@ -74,6 +104,13 @@ export default defineConfig(({ command, mode }) => {
         }
       ]),
       // Use Node.js API in the Renderer-process
+      // renderer({
+      //   resolve: {
+      //     'mqtt': {
+      //       type: 'cjs'
+      //     },
+      //   }
+      // }),
       renderer(),
     ],
     server: env.VSCODE_DEBUG && (() => {

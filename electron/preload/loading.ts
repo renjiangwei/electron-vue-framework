@@ -85,4 +85,4 @@ domReady().then(appendLoading)
 window.onmessage = (ev) => {
   ev.data.payload === 'removeLoading' && removeLoading()
 }
-// setTimeout(removeLoading, 4000)
+setTimeout(removeLoading, 4000)

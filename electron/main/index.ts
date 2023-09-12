@@ -1,6 +1,9 @@
-import { app, BrowserWindow, shell, ipcMain } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, Notification, Tray, nativeImage, Menu, MenuItemConstructorOptions,
+  dialog, screen
+} from 'electron'
 import { release } from 'node:os'
 import { join } from 'node:path'
+// import { startServer } from './server'
 
 // The built directory structure
 //
@@ -39,7 +42,6 @@ let win: BrowserWindow | null = null
 const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
-
 async function createWindow() {
   win = new BrowserWindow({
     width: 1024,
@@ -53,8 +55,8 @@ async function createWindow() {
       // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
       // Consider using contextBridge.exposeInMainWorld
       // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
-      nodeIntegration: false,
-      contextIsolation: true,
+      nodeIntegration: true,
+      contextIsolation: false,
       // sandbox: true
     },
   })
@@ -66,6 +68,7 @@ async function createWindow() {
   } else {
     win.loadFile(indexHtml)
   }
+  // win.loadURL('http://192.168.131.16:8080/')
 
   // Test actively push message to the Electron-Renderer
   win.webContents.on('did-finish-load', () => {
@@ -77,13 +80,112 @@ async function createWindow() {
     if (url.startsWith('https:')) shell.openExternal(url)
     return { action: 'deny' }
   })
+
+
+  // const NOTIFICATION_TITLE = 'Basic Notification'
+  // const NOTIFICATION_BODY = 'Notification from the Main process'
+
+  // new Notification({
+  //   title: NOTIFICATION_TITLE,
+  //   body: NOTIFICATION_BODY
+  // }).show()
+
+  // startServer()
   // win.webContents.on('will-navigate', (event, url) => { }) #344
 }
 
-app.whenReady().then(createWindow)
+const createDialog = () => {
+  dialog.showMessageBox({
+    message: 'message',
+  })
+}
+
+let sub: BrowserWindow;
+const createSubWindow = () => {
+  const p = screen.getPrimaryDisplay()
+  const w = p.workAreaSize.width
+  const h = p.workAreaSize.height
+  sub = new BrowserWindow({
+    width: 400,
+    height: 400,
+    frame: false,
+    fullscreen: false,
+    title: '通知',
+    
+  })
+  sub.setPosition(w - 400, h - 400)
+  // sub.loadFile('./dist/index.html')
+  if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
+    sub.loadURL(url + '/subWindow/')
+    // Open devTool if the app is not packaged
+    // sub.webContents.openDevTools()
+  } else {
+    sub.loadFile(join(process.env.DIST, 'subWindow/index.html'))
+  }
+}
+
+let tray: Tray;
+// const initTray = () => {
+//   const icon = nativeImage.createFromPath('./src/assets/favicon@256x256.png')
+//   tray = new Tray(icon)
+//   const contextMenu = Menu.buildFromTemplate([
+//     { label: 'show', type: 'normal', click () {
+//       win?.show()
+//     } },
+//     { label: 'hide', type: 'normal', click () {
+//       win?.hide()
+//     } },
+//     { label: 'max', type: 'normal', click () {
+//       if (win?.isMaximizable() && !win.isMaximized()) {
+//         win?.maximize()
+//       } else {
+//         win?.unmaximize()
+//       }
+//     } },
+//     { label: 'small', type: 'normal', click () {
+//       // win.hide()
+//       win.minimize()
+//     } },
+//     { label: 'close', type: 'normal', click () {
+//       app.quit()
+//     } }
+//   ] as MenuItemConstructorOptions[])
+  
+//   tray.setContextMenu(contextMenu)
+//   tray.setToolTip('This is my application')
+//   tray.setTitle('This is my title')
+//   tray.on('double-click', () => {
+//     if (win?.isMaximizable() && !win.isMaximized()) {
+//       win?.maximize()
+//     } else {
+//       win?.unmaximize()
+//     }
+//   })
+// }
+
+app.whenReady().then(async () => {
+  await createWindow();
+  // initTray()
+  // let a = 0
+  // setInterval(() => {
+  //   if (a < 1) {
+  //     win.setProgressBar(a)
+  //     a+=0.03
+  //   } else {
+  //     win.setProgressBar(0)
+  //   }
+  // }, 1000)
+  
+  // setTimeout(() => {
+  //   createDialog()
+  //   // createSubWindow()
+  // }, 3000)
+})
 
 app.on('window-all-closed', () => {
+  tray = null
   win = null
+  sub = null
   if (process.platform !== 'darwin') app.quit()
 })
 

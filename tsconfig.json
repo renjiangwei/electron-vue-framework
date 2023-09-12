@@ -24,7 +24,7 @@
     "noImplicitAny": false,
     "skipLibCheck": true,
     "removeComments": true,
-    "types": ["node", "qs"],
+    "types": ["node", "qs", "express"],
     "paths": {
       "@/*": [
         "src/*"

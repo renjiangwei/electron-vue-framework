@@ -1,0 +1,1 @@
+export type LifeCircle = 'beforeActive' | 'afterActive'
