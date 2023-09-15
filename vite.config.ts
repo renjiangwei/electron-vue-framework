@@ -5,6 +5,11 @@ import electron from 'vite-plugin-electron'
 import renderer from 'vite-plugin-electron-renderer'
 import pkg from './package.json'
 import { resolve } from 'path'
+import { ChildProcess, exec, spawn } from 'node:child_process'
+import { builtinModules } from 'node:module'
+import { build as esbuild } from 'esbuild'
+import { esbuildElectron } from './plugins/esbuild'
+import { viteBuildElectron } from './plugins/viteBuild'
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
   rmSync('dist-electron', { recursive: true, force: true })
@@ -14,13 +19,6 @@ export default defineConfig(({ command, mode }) => {
   const isBuild = command === 'build'
   const sourcemap = isServe || !!env.VSCODE_DEBUG
 
-  const externals = pkg.dependencies ? pkg.dependencies : {}
-  const list = Object.keys(externals)
-  const i = list.indexOf('express')
-  if (i > -1) {
-    list.splice(i, 1)
-  }
-  console.log(list, 'list')
   return {
     css: {
       preprocessorOptions: {
@@ -47,71 +45,55 @@ export default defineConfig(({ command, mode }) => {
     },
     plugins: [
       vue(),
-      // {
-      //   name: 'test',
-      //   apply: 'serve',
-      //   configureServer (server) {
-      //     server.httpServer.once('listening', () => {
-      //       build({
-      //         plugins: [
-      //           {
-      //             name: 'startup',
-      //             async closeBundle () {
-      //               process.env.VITE_DEV_SERVER_URL = 'http://localhost:3000/'
-      //               console.log('close bundle')
-      //               const { spawn } = await import('node:child_process')
-      //               const electron = await import('electron')
-      //               process.electronApp = spawn(electron.default ?? electron as any, ['.', '--no-sandbox'], { stdio: 'inherit' })
-      //             }
-      //           }
-      //         ]
-      //       })
-      //     })
+      // esbuild
+      // ...esbuildElectron(isBuild),
+
+      // electron插件内容
+      ...viteBuildElectron(isBuild),
+
+      // electron([
+      //   {
+      //     // Main-Process entry file of the Electron App.
+      //     entry: ['electron/main/index.ts', 'electron/main/server.ts'],
+      //     onstart(options) {
+      //       if (env.VSCODE_DEBUG) {
+      //         options.startup()
+      //         console.log(/* For `.vscode/.debug.script.mjs` */'[startup] Electron App')
+      //       } else {
+      //         options.startup()
+      //       }
+      //     },
+      //     vite: {
+      //       build: {
+      //         sourcemap,
+      //         minify: isBuild,
+      //         outDir: 'dist-electron/main',
+      //         rollupOptions: {
+      //           external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
+      //         },
+      //       },
+      //     },
+      //   },
+      //   {
+      //     entry: 'electron/preload/index.ts',
+      //     onstart(options) {
+      //       // Notify the Renderer-Process to reload the page when the Preload-Scripts build is complete, 
+      //       // instead of restarting the entire Electron App.
+      //       options.reload()
+      //     },
+      //     vite: {
+      //       build: {
+      //         sourcemap: sourcemap ? 'inline' : undefined, // #332
+      //         minify: isBuild,
+      //         outDir: 'dist-electron/preload',
+      //         rollupOptions: {
+      //           external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
+      //         },
+      //       },
+      //     },
       //   }
-      // },
-      electron([
-        {
-          // Main-Process entry file of the Electron App.
-          entry: 'electron/main/index.ts',
-          onstart(options) {
-            if (env.VSCODE_DEBUG) {
-              options.startup()
-              console.log(/* For `.vscode/.debug.script.mjs` */'[startup] Electron App')
-            } else {
-              options.startup()
-            }
-          },
-          vite: {
-            build: {
-              sourcemap,
-              minify: isBuild,
-              outDir: 'dist-electron/main',
-              rollupOptions: {
-                // external: list,
-                // external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
-              },
-            },
-          },
-        },
-        {
-          entry: 'electron/preload/index.ts',
-          onstart(options) {
-            // Notify the Renderer-Process to reload the page when the Preload-Scripts build is complete, 
-            // instead of restarting the entire Electron App.
-            options.reload()
-          },
-          vite: {
-            build: {
-              sourcemap: sourcemap ? 'inline' : undefined, // #332
-              minify: isBuild,
-              outDir: 'dist-electron/preload',
-              rollupOptions: {
-                external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
-              },
-            },
-          },
-        }
-      ]),
+      // ]),
+
       // Use Node.js API in the Renderer-process
       // renderer({
       //   resolve: {
