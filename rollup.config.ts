@@ -14,8 +14,9 @@ export default defineConfig(
           },
         },
         typescript({
+          tsconfig: 'tsconfig.json',
           abortOnError: false,
-          
+          check: false
         })
       ],
       output: {
@@ -27,7 +28,9 @@ export default defineConfig(
       input: ['electron/preload/index.ts'],
       plugins: [
         typescript({
-          abortOnError: false
+          tsconfig: 'tsconfig.json',
+          abortOnError: false,
+          check: false
         })
       ],
       output: {
