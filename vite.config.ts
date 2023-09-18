@@ -10,6 +10,7 @@ import { builtinModules } from 'node:module'
 import { build as esbuild } from 'esbuild'
 import { esbuildElectron } from './plugins/esbuild'
 import { viteBuildElectron } from './plugins/viteBuild'
+import { rollupBuildElectron } from './plugins/rollupBuild'
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
   rmSync('dist-electron', { recursive: true, force: true })
@@ -46,10 +47,13 @@ export default defineConfig(({ command, mode }) => {
     plugins: [
       vue(),
       // esbuild
-      ...esbuildElectron(isBuild),
+      // ...esbuildElectron(isBuild),
 
       // electron插件内容
       // ...viteBuildElectron(isBuild),
+
+      // rollup build
+      rollupBuildElectron(isBuild),
 
       // electron([
       //   {

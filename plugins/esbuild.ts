@@ -12,6 +12,12 @@ export const esbuildElectron = (isBuild): Plugin[] => {
           Object.assign(process.env, {
             VITE_DEV_SERVER_URL: `http://${address.address}:${address.port}${server.config.base}`
           })
+          const exit = () => {
+            if (process.electronApp) {
+              process.electronApp.removeAllListeners()
+              process.electronApp.kill()
+            }
+          }
           await build({
             outdir: 'dist-electron/main',
             format: 'cjs',
@@ -36,17 +42,12 @@ export const esbuildElectron = (isBuild): Plugin[] => {
                   build.onEnd(async () => {
                     const { spawn } = await import('node:child_process')
                     const electron = await import('electron')
-
+                    exit()
                     process.electronApp = spawn(electron.default ?? electron as any, ['.', '--no-sandbox'], { stdio: 'inherit' })
                     process.electronApp.once('exit', () => {
                       process.exit()
                     })
-                    process.once('exit', () => {
-                      if (process.electronApp) {
-                        process.electronApp.removeAllListeners()
-                        process.electronApp.kill()
-                      }
-                    })
+                    process.once('exit', exit)
                   })
                 }
               }

@@ -33,6 +33,14 @@ export const viteBuildElectron = (isBuild): Plugin[] => {
               mainFields: ['module', 'jsnext:main', 'jsnext']
             },
           })
+
+          const exit = () => {
+            console.log(process.electronApp ? true : false, 'dd')
+            if (process.electronApp) {
+              process.electronApp.removeAllListeners()
+              process.electronApp.kill()
+            }
+          }
           build({
             configFile: false,
             publicDir: false,
@@ -60,17 +68,12 @@ export const viteBuildElectron = (isBuild): Plugin[] => {
                   console.log('close bundle')
                   const { spawn } = await import('node:child_process')
                   const electron = await import('electron')
-
+                  exit()
                   process.electronApp = spawn(electron.default ?? electron as any, ['.', '--no-sandbox'], { stdio: 'inherit' })
                   process.electronApp.once('exit', () => {
                     process.exit()
                   })
-                  process.once('exit', () => {
-                    if (process.electronApp) {
-                      process.electronApp.removeAllListeners()
-                      process.electronApp.kill()
-                    }
-                  })
+                  process.once('exit', exit)
                 }
               }
             ]
