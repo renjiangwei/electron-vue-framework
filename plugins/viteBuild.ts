@@ -1,5 +1,6 @@
 import { Plugin, build } from "vite";
 import { builtinModules } from "node:module";
+import { AddressInfo } from "node:net";
 export const viteBuildElectron = (isBuild): Plugin[] => {
   return [
     {
@@ -7,6 +8,10 @@ export const viteBuildElectron = (isBuild): Plugin[] => {
       apply: 'serve',
       configureServer(server) {
         server.httpServer.once('listening', async () => {
+          const address = server.httpServer.address() as AddressInfo
+          Object.assign(process.env, {
+            VITE_DEV_SERVER_URL: `http://${address.address}:${address.port}${server.config.base}`
+          })
           const builtins = builtinModules.filter(e => !e.startsWith('_')); builtins.push('electron', ...builtins.map(m => `node:${m}`))
           build({
             configFile: false,
@@ -52,7 +57,6 @@ export const viteBuildElectron = (isBuild): Plugin[] => {
               {
                 name: 'startup',
                 async closeBundle() {
-                  process.env.VITE_DEV_SERVER_URL = 'http://localhost:3000/'
                   console.log('close bundle')
                   const { spawn } = await import('node:child_process')
                   const electron = await import('electron')

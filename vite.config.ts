@@ -46,10 +46,10 @@ export default defineConfig(({ command, mode }) => {
     plugins: [
       vue(),
       // esbuild
-      // ...esbuildElectron(isBuild),
+      ...esbuildElectron(isBuild),
 
       // electron插件内容
-      ...viteBuildElectron(isBuild),
+      // ...viteBuildElectron(isBuild),
 
       // electron([
       //   {
@@ -104,11 +104,11 @@ export default defineConfig(({ command, mode }) => {
       // }),
       renderer(),
     ],
-    server: env.VSCODE_DEBUG && (() => {
-      // const url = new URL(pkg.debug.env.VITE_DEV_SERVER_URL)
+    server: (() => {
+      const url = new URL(pkg.debug.env.VITE_DEV_SERVER_URL)
       return {
-        // host: url.hostname,
-        // port: +url.port,
+        host: url.hostname,
+        port: +url.port,
         proxy: {
           '^/api': {
             target: 'http://127.0.0.1:3001',

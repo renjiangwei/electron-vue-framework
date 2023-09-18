@@ -22,5 +22,3 @@ export const startServer = () => {
     console.log("Listen to Port 8880!");
   });
 }
-const a = express()
-a.listen()

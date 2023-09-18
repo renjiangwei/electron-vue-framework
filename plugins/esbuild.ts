@@ -1,12 +1,17 @@
 import { build } from 'esbuild'
-
-export const esbuildElectron = (isBuild) => {
+import { AddressInfo } from 'node:net';
+import { Plugin } from "vite";
+export const esbuildElectron = (isBuild): Plugin[] => {
   return [
     {
       name: 'test',
       apply: 'serve',
       configureServer (server) {
         server.httpServer.once('listening', async () => {
+          const address = server.httpServer.address() as AddressInfo
+          Object.assign(process.env, {
+            VITE_DEV_SERVER_URL: `http://${address.address}:${address.port}${server.config.base}`
+          })
           await build({
             outdir: 'dist-electron/main',
             format: 'cjs',
