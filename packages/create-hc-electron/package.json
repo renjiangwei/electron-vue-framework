@@ -1,6 +1,6 @@
 {
   "name": "create-hc-electron",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "dist/index.js",
   "bin": "dist/bin/index.js",

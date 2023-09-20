@@ -17,6 +17,18 @@ import {
   yellow,
 } from 'kolorist'
 
+const args = process.argv.slice(2)
+const argv = minimist<{
+  v: any,
+  version: any,
+}>(args)
+if (argv.version || argv.v) {
+  const pkgPath = path.join(__dirname, '../..', 'package.json')
+  const str = fs.readFileSync(pkgPath, 'utf-8').toString()
+  const pkg = JSON.parse(str)
+  console.log('create-hc-electron version is:', pkg.version)
+  process.exit(1)
+}
 const fileExist = (filePath) => {
   return fs.existsSync(filePath)
 }
