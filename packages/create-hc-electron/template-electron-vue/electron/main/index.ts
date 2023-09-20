@@ -4,8 +4,7 @@ import { app, BrowserWindow, shell, ipcMain, Notification, Tray, nativeImage, Me
 import { release } from 'node:os'
 import { join } from 'node:path'
 import { startServer } from './server'
-import { a } from 'test-cac'
-console.log('test-cac', a)
+
 // The built directory structure
 //
 // ├─┬ dist-electron
@@ -43,7 +42,6 @@ let win: BrowserWindow | null = null
 const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
-console.log(process.env.VITE_DEV_SERVER_URL, 'd')
 async function createWindow() {
   win = new BrowserWindow({
     width: 1024,
@@ -123,11 +121,8 @@ const createSubWindow = () => {
     }
   })
   sub.setPosition(w - 400, h - 400)
-  // sub.loadFile('./dist/index.html')
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
     sub.loadURL(url + '/subWindow/')
-    // Open devTool if the app is not packaged
-    // sub.webContents.openDevTools()
   } else {
     sub.loadFile(join(process.env.DIST, 'subWindow/index.html'))
   }
@@ -174,20 +169,25 @@ const initTray = () => {
 
 app.whenReady().then(async () => {
   await createWindow();
-  initTray()
-  let a = 0
-  setInterval(() => {
-    if (a < 1) {
-      win.setProgressBar(a)
-      a+=0.03
-    } else {
-      win.setProgressBar(0)
-    }
-  }, 1000)
+
+  // 任务栏角标
+  // initTray()
+
+  // 进度条
+  // let a = 0
+  // setInterval(() => {
+  //   if (a < 1) {
+  //     win.setProgressBar(a)
+  //     a+=0.03
+  //   } else {
+  //     win.setProgressBar(0)
+  //   }
+  // }, 1000)
   
-  setTimeout(() => {
-    createDialog()
-  }, 3000)
+  // 创建窗口
+  // setTimeout(() => {
+  //   createDialog()
+  // }, 3000)
 })
 
 app.on('window-all-closed', () => {
