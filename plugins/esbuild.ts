@@ -63,8 +63,21 @@ export const esbuildElectron = (isBuild): Plugin[] => {
         const res = await build({
           outdir: 'dist-electron/main',
           format: 'cjs',
+          // bundle: true,
+          // platform: 'node',
+          // external: ['electron', 'node:os', 'node:path', 'electron/main/*'],
           entryPoints: [
             'electron/main/index.ts',
+            // 'electron/main/server.ts',
+          ],
+        })
+        await build({
+          outdir: 'dist-electron/main',
+          format: 'cjs',
+          bundle: true,
+          platform: 'node',
+          external: ['electron', 'node:os', 'node:path'],
+          entryPoints: [
             'electron/main/server.ts',
           ],
         })

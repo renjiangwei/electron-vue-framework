@@ -91,7 +91,7 @@ export const viteBuildElectron = (isBuild): Plugin[] => {
           publicDir: false,
           build: {
             rollupOptions: {
-              external: builtins
+              external: builtins.concat(['express'])
             },
             lib: {
               entry: ['electron/preload/index.ts'],
@@ -112,7 +112,7 @@ export const viteBuildElectron = (isBuild): Plugin[] => {
           build: {
             minify: false,
             rollupOptions: {
-              external: builtins,
+              external: builtins.concat(['express']),
             },
             lib: {
               entry: ['electron/main/index.ts', 'electron/main/server.ts'],

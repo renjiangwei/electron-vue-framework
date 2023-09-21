@@ -3,6 +3,8 @@ import { defineConfig, loadEnv, build } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import electron from 'vite-plugin-electron'
 import renderer from 'vite-plugin-electron-renderer'
+// import rollupResolve from '@rollup/plugin-node-resolve'
+// import rollupCommonjs from '@rollup/plugin-commonjs'
 import pkg from './package.json'
 import { resolve } from 'path'
 import { ChildProcess, exec, spawn } from 'node:child_process'
@@ -11,6 +13,7 @@ import { build as esbuild } from 'esbuild'
 import { esbuildElectron } from './plugins/esbuild'
 import { viteBuildElectron } from './plugins/viteBuild'
 import { rollupBuildElectron } from './plugins/rollupBuild'
+
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
   rmSync('dist-electron', { recursive: true, force: true })

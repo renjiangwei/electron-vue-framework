@@ -4,8 +4,7 @@ import { app, BrowserWindow, shell, ipcMain, Notification, Tray, nativeImage, Me
 import { release } from 'node:os'
 import { join } from 'node:path'
 import { startServer } from './server'
-import { a } from 'test-cac'
-console.log('test-cac', a)
+
 // The built directory structure
 //
 // ├─┬ dist-electron

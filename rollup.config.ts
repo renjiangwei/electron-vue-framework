@@ -37,6 +37,9 @@ export default defineConfig(
         dir: 'dist-electron/preload',
         format: 'cjs'
       },
+      watch: {
+        
+      },
     }
   ]
 )

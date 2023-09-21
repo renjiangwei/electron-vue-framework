@@ -113,7 +113,7 @@ export const rollupBuildElectron = (isBuild): Plugin[] => {
           ],
         } as InputOptions)
         preloadBundle.write({
-          dir: 'dist-electron/preaload',
+          dir: 'dist-electron/preload',
           format: 'cjs'
         })
       }
