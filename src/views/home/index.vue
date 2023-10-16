@@ -1,9 +1,11 @@
 <template>
-  <Test></Test>
+  <!-- <Test></Test> -->
+  <PixelDrawer></PixelDrawer>
 </template>
 <script setup lang="tsx">
 import { computed, unref } from 'vue';
 import Test from './test.vue'
+import PixelDrawer from './PixelDrawer.vue'
 // import { connect } from 'mqtt'
 // console.log(connect, 'df')
 // import '@/components/three/test'

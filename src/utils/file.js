@@ -22,7 +22,7 @@ const type = {
 const en = Object.entries(type)
 const map = new Map(en)
 // 读取文件
-fs.readFile('favicon.ico', (err, data) => {
+fs.readFile('C:\\Users\\brigh\\Desktop\\任江伟-研发中心人员工作情况统计-8.18.xlsx', (err, data) => {
   if (err) throw err;
 
   // 将文件内容转换为二进制流输出
