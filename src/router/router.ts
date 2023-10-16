@@ -9,5 +9,10 @@ export const home: RouteRecordRaw[] = [
     name: 'home',
     path: '/home',
     component: () => import('@/views/home/index.vue'),
+  },
+  {
+    name: 't',
+    path: '/t',
+    component: () => import('@/views/home/test.vue')
   }
 ]

@@ -1,6 +1,7 @@
 <template>
   <!-- <Test></Test> -->
   <PixelDrawer></PixelDrawer>
+  <button @click="$router.push({name: 't'})"></button>
 </template>
 <script setup lang="tsx">
 import { computed, unref } from 'vue';
