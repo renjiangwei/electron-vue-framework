@@ -1,12 +1,14 @@
 <template>
   <!-- <Test></Test> -->
-  <PixelDrawer></PixelDrawer>
-  <button @click="$router.push({name: 't'})"></button>
+  <!-- <PixelDrawer></PixelDrawer> -->
+  <!-- <Tdmap></Tdmap> -->
+  <!-- <button @click="$router.push({name: 't'})"></button> -->
 </template>
 <script setup lang="tsx">
 import { computed, unref } from 'vue';
 import Test from './test.vue'
 import PixelDrawer from './PixelDrawer.vue'
+import Tdmap from '../../components/3dmap/index.vue'
 // import { connect } from 'mqtt'
 // console.log(connect, 'df')
 // import '@/components/three/test'

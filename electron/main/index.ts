@@ -4,7 +4,27 @@ import { app, BrowserWindow, shell, ipcMain, Notification, Tray, nativeImage, Me
 import { release } from 'node:os'
 import { join } from 'node:path'
 import { startServer } from './server'
+import { autoUpdater } from 'electron-updater'
 
+
+if (process.env.NODE_ENV == 'development') {
+  console.log('d')
+  Object.defineProperty(app, 'isPackaged', {
+    get() {
+      return true
+    }
+  })
+  autoUpdater.updateConfigPath = join(__dirname, '../../dev-app-update.yml')
+}
+try {
+  autoUpdater.setFeedURL('http://192.168.131.16:8888/')
+  autoUpdater.checkForUpdates();
+  autoUpdater.addListener('update-downloaded', () => {
+    autoUpdater.quitAndInstall();
+  })
+} catch (e) {
+
+}
 // The built directory structure
 //
 // ├─┬ dist-electron

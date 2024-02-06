@@ -28,7 +28,7 @@ export const rollupBuildElectron = (isBuild): Plugin[] => {
                 check: false
               })
             ],
-            external: ['express', 'node:os', 'node:path', 'electron'],
+            external: ['express', 'node:os', 'node:path', 'electron', 'electron-builder'],
           } as InputOptions)
           await res.write({
             dir: 'dist-electron/main',
@@ -95,7 +95,7 @@ export const rollupBuildElectron = (isBuild): Plugin[] => {
               check: false
             })
           ],
-          external: ['express', 'node:os', 'node:path', 'electron'],
+          external: ['express', 'node:os', 'node:path', 'electron', 'electron-builder'],
         } as InputOptions);
         await res.write({
           dir: 'dist-electron/main',

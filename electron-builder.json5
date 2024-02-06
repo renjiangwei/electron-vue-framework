@@ -16,6 +16,12 @@
     "from": "./config.json",
     "to": "./"
   },
+  "publish": [
+    {
+      "provider": "generic",
+      "url": "http://192.168.131.16:8888",
+    }
+  ],
   "mac": {
     "artifactName": "${productName}_${version}.${ext}",
     "target": [

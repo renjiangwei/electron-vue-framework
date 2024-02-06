@@ -1,0 +1,8 @@
+version: 1.0.1
+files:
+  - url: electron-framework_1.0.1.exe
+    sha512: X3+mxszn00Cb2cPePfTUyTlgpfuotOuQhj6aUft7ns84Qc3/D/2S8hpWPJkfOW1cgrv1O+1F0Onz4EOhWcaIlQ==
+    size: 97410323
+path: electron-framework_1.0.1.exe
+sha512: X3+mxszn00Cb2cPePfTUyTlgpfuotOuQhj6aUft7ns84Qc3/D/2S8hpWPJkfOW1cgrv1O+1F0Onz4EOhWcaIlQ==
+releaseDate: '2024-01-25T06:09:44.972Z'
